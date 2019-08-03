@@ -5,8 +5,9 @@ TagManager:
   serializedVersion: 2
   tags:
   - meja
-  - antri
   - pesan
+  - antriDuduk
+  - antriPesan
   layers:
   - Default
   - TransparentFX

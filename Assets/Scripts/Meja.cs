@@ -4,5 +4,31 @@ using UnityEngine;
 
 public class Meja : MonoBehaviour
 {
-    public Pelanggan pelangganDiMeja;
+    private Pelanggan pelangganDiMeja;
+
+    public bool IsUsed
+    {
+        get
+        {
+            if (pelangganDiMeja != null)
+                return true;
+            else
+                return false;
+        }
+    }
+
+    // dipanggil dari GameManager
+    public void MasukDiMeja(Pelanggan newPelanggan)
+    {
+        pelangganDiMeja = newPelanggan;
+    }
+
+    // dipanggil dari GameManager
+    public void KeluarDariMeja()
+    {
+        //pelangganDiMeja.gameObject.SetActive(false);
+
+        Destroy(pelangganDiMeja.gameObject);
+        pelangganDiMeja = null;
+    }
 }

@@ -5,11 +5,15 @@ using UnityEngine.AI;
 
 public class Pelanggan : MonoBehaviour
 {
-    private const string MEJA_TAG = "meja", ANTRI_TAG = "antri", PESAN_TAG = "pesan";
+    private const string MEJA_TAG = "meja", 
+                         ANTRIPESAN_TAG = "antriPesan", 
+                         PESAN_TAG = "pesan",
+                         ANTRIDUDUK_TAG = "antriDuduk";
 
     Transform tujuan;
     public float jarak;
     private NavMeshAgent _navAgent;
+    private Meja dudukDi;
 
     [SerializeField]
     private statePelanggan myState;
@@ -49,7 +53,7 @@ public class Pelanggan : MonoBehaviour
         }
     }
 
-    // dilanggil dari DragHandler 
+    // dilanggil dari DragHandler, setelah disentuh
     public void TappedByUser()
     {
         Debug.Log(myState + "."+ gameObject.name);
@@ -61,32 +65,51 @@ public class Pelanggan : MonoBehaviour
 
                 break;
 
-            case statePelanggan.antri:
+            case statePelanggan.antriPesan:
                 
 
                 break;
+
             case statePelanggan.pesan:
                 GManager.MasukMejaMakan(this);
 
                 break;
 
             case statePelanggan.makan:
-                
-
+                GManager.SelesaiMakan(dudukDi);
+                dudukDi = null;
                 break;
+
             case statePelanggan.bayar:
 
+
+                break;
+
+            case statePelanggan.antriDuduk:
+                GManager.MasukMejaMakanDariAntrianDuduk(this);
 
                 break;
         }
     }
 
-    // dilanggil dari GameManager
+    // dilanggil dari GameManager, MejaManager
     public void Berjalan(Transform _pos)
     {
         tujuan = _pos;
         _navAgent.isStopped = false;
-        myState = statePelanggan.jalan;
+
+        if (tujuan.tag == MEJA_TAG)
+        {
+            myState = statePelanggan.makan;
+        }
+        else if (tujuan.tag == ANTRIDUDUK_TAG)
+        {
+            myState = statePelanggan.antriDuduk;
+        }
+        else
+        {
+            myState = statePelanggan.jalan;
+        }
 
         _navAgent.SetDestination(_pos.position);
     }
@@ -95,17 +118,17 @@ public class Pelanggan : MonoBehaviour
     {
         transform.rotation = tujuan.rotation;
 
-        if (tujuan.tag == MEJA_TAG)
+        if (tujuan.tag == ANTRIPESAN_TAG)
         {
-            myState = statePelanggan.makan;
-        }
-        else if (tujuan.tag == ANTRI_TAG)
-        {
-            myState = statePelanggan.antri;
+            myState = statePelanggan.antriPesan;
         }
         else if (tujuan.tag == PESAN_TAG)
         {
             myState = statePelanggan.pesan;
+        }
+        else if (tujuan.tag == MEJA_TAG)
+        {
+            dudukDi = tujuan.GetComponent<Meja>();
         }
 
         _navAgent.isStopped = true;
@@ -118,5 +141,5 @@ public class Pelanggan : MonoBehaviour
 
 public enum statePelanggan
 {
-    jalan, antri, pesan, makan, bayar
+    jalan, antriPesan, pesan, makan, antriDuduk, bayar
 }

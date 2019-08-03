@@ -7,6 +7,7 @@ using Random = UnityEngine.Random;
 public class GameManager : MonoBehaviour
 {
     public static GameManager _instance;
+    private MejaManager mejaManager;
 
     [Header("Komponen Prefab")]
     [SerializeField]
@@ -16,20 +17,20 @@ public class GameManager : MonoBehaviour
     public Transform antrianParent;
     private List<Transform> antrianList = new List<Transform>();
 
-    public Transform mejaParent;
-    private List<Transform> mejaList = new List<Transform>();
-
     [Header("List")]
     public Transform poolPelanggan;
     //[SerializeField]
     private List<Pelanggan> pelangganMengantriList = new List<Pelanggan>();
     private List<Pelanggan> pelangganMakanList = new List<Pelanggan>();
+    private List<Pelanggan> belumDapatMejaList = new List<Pelanggan>();
+
 
     int counter;
 
     private void Awake()
     {
         _instance = this;
+        mejaManager = GetComponent<MejaManager>();
     }
 
     private void Start()
@@ -40,11 +41,7 @@ public class GameManager : MonoBehaviour
 
         }
 
-        foreach (Transform child in mejaParent.transform)
-        {
-            mejaList.Add(child);
-
-        }
+        
     }
 
     private void Update()
@@ -77,16 +74,61 @@ public class GameManager : MonoBehaviour
     // dipanggil dari pelanggan
     public void MasukMejaMakan(Pelanggan newPelanggan)
     {
+        // buang dari antrian
         if (!pelangganMengantriList.Contains(newPelanggan))
             return;
-        pelangganMengantriList.Remove(newPelanggan);
+        pelangganMengantriList.Remove(newPelanggan);        
 
+        if (mejaManager.MejaPenuh())
+        {
+            Debug.Log("meja Penuh");
+            // masukkan ke antrian duduk
+            if (belumDapatMejaList.Contains(newPelanggan))
+                return;
+            belumDapatMejaList.Add(newPelanggan);
+
+            newPelanggan.Berjalan(mejaManager.antrianMeja);
+        }
+        else
+        {
+            // masukkan ke antrian Makan
+            if (pelangganMakanList.Contains(newPelanggan))
+                return;
+            pelangganMakanList.Add(newPelanggan);
+
+            pelangganMakan();
+        }
+
+        pelangganMengantri();
+    }
+
+    // dipanggil dari pelanggan
+    public void MasukMejaMakanDariAntrianDuduk(Pelanggan newPelanggan)
+    {
+        if (mejaManager.MejaPenuh())
+        {
+            Debug.Log("meja masih penuh");
+            return;
+        }
+
+        // buang dari antrian duduk
+        if (!belumDapatMejaList.Contains(newPelanggan))
+            return;
+        belumDapatMejaList.Remove(newPelanggan);
+
+        // masukkan ke antrian Makan
         if (pelangganMakanList.Contains(newPelanggan))
             return;
         pelangganMakanList.Add(newPelanggan);
 
         pelangganMakan();
-        pelangganMengantri();
+    }
+
+    // dipanggil dari pelanggan
+    public void SelesaiMakan(Meja mejaPelanggan)
+    {
+        mejaPelanggan.KeluarDariMeja();
+        mejaManager.mejaAvailable.Add(mejaPelanggan);
     }
 
     private void pelangganMakan()
@@ -98,7 +140,7 @@ public class GameManager : MonoBehaviour
             if (newPelanggan.MyState == statePelanggan.makan)
                 continue;
 
-            newPelanggan.Berjalan(mejaList [Random.Range(0, mejaList.Count - 1)] );
+            mejaManager.MasukMeja(newPelanggan);
         }
     }
 
