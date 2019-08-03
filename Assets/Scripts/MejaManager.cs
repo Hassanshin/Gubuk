@@ -26,8 +26,6 @@ public class MejaManager : MonoBehaviour
     //dipanggin dari GameManager
     public void MasukMeja(Pelanggan newPelanggan)
     {
-        
-
         Meja _mejaIndex = randomMeja();
 
         _mejaIndex.MasukDiMeja(newPelanggan);

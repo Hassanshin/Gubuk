@@ -76,6 +76,9 @@ public class Pelanggan : MonoBehaviour
                 break;
 
             case statePelanggan.makan:
+                if (dudukDi == null)
+                    return;
+
                 GManager.SelesaiMakan(dudukDi);
                 dudukDi = null;
                 break;

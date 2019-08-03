@@ -57,6 +57,8 @@ public class GameManager : MonoBehaviour
         GameObject pelanggan = Instantiate(prefabPelanggan, poolPelanggan.transform.position, poolPelanggan.transform.rotation);
 
         pelanggan.name = ("pelanggan " + counter);
+        pelanggan.transform.SetParent(poolPelanggan);
+
         counter++;
     }
 
