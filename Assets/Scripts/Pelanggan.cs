@@ -33,10 +33,16 @@ public class Pelanggan : MonoBehaviour
         GManager = GameManager._instance;
     }
 
-    private void Start()
+    private void Awake()
     {
         getKomponen();
 
+        
+    }
+
+    // dipanggil dari GameManager, setelah di Spawn dari pool
+    public void SpawnedFromPool()
+    {
         GManager.MasukAntrian(this);
     }
 
@@ -79,7 +85,10 @@ public class Pelanggan : MonoBehaviour
                 if (dudukDi == null)
                     return;
 
-                GManager.SelesaiMakan(dudukDi);
+                GManager.SelesaiMakan(this, dudukDi);
+
+                // reset state
+                myState = statePelanggan.jalan;
                 dudukDi = null;
                 break;
 

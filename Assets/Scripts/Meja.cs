@@ -26,9 +26,7 @@ public class Meja : MonoBehaviour
     // dipanggil dari GameManager
     public void KeluarDariMeja()
     {
-        //pelangganDiMeja.gameObject.SetActive(false);
 
-        Destroy(pelangganDiMeja.gameObject);
         pelangganDiMeja = null;
     }
 }
