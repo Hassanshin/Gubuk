@@ -8,17 +8,15 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager _instance;
     private MejaManager mejaManager;
-
-
+    private DapurManager dapurManager;
 
     [Header("Komponen Transform")]
     public Transform antrianParent;
     private List<Transform> antrianList = new List<Transform>();
     public Transform poolPelangganParent;
     private List<Transform> poolPelangganList = new List<Transform>();
+
     [Header("List")]
-    
-    //[SerializeField]
     private List<Pelanggan> pelangganMengantriList = new List<Pelanggan>();
     private List<Pelanggan> pelangganMakanList = new List<Pelanggan>();
     private List<Pelanggan> belumDapatMejaList = new List<Pelanggan>();
@@ -31,6 +29,7 @@ public class GameManager : MonoBehaviour
     {
         _instance = this;
         mejaManager = GetComponent<MejaManager>();
+        dapurManager = GetComponent<DapurManager>();
     }
 
     private void Start()
@@ -73,8 +72,6 @@ public class GameManager : MonoBehaviour
         {
             spawnPelanggan();
 
-            Debug.Log("spawn");
-
             float _random = Random.Range(2, 6);
             yield return new WaitForSeconds(_random);
         }
@@ -84,7 +81,7 @@ public class GameManager : MonoBehaviour
     {
         if (poolPelangganList.Count <= 0)
         {
-            Debug.Log("Pool Pelanggan Habis");
+            //Debug.Log("Pool Pelanggan Habis");
             return;
         }
 
@@ -115,31 +112,58 @@ public class GameManager : MonoBehaviour
     private void deSpawnAddToPool (Transform newAdd)
     {
         newAdd.gameObject.SetActive(false);
-        poolPelangganList.Add(newAdd);
+
+        if(!poolPelangganList.Contains(newAdd))
+            poolPelangganList.Add(newAdd);
 
         newAdd.position = poolPelangganParent.position;
         newAdd.rotation = poolPelangganParent.rotation;
     }
 
     // dipanggil dari pelanggan
-    public void MasukAntrian(Pelanggan newPelanggan)
+    public void moodHabis(Pelanggan newPelanggan)
+    {
+        deSpawnAddToPool(newPelanggan.transform);
+
+        removeFromAllList(newPelanggan);
+
+        pelangganMengantri();
+    }
+
+    private void removeFromAllList(Pelanggan newPelanggan)
     {
         if (pelangganMengantriList.Contains(newPelanggan))
-            return;
+            pelangganMengantriList.Remove(newPelanggan);
 
-        pelangganMengantriList.Add(newPelanggan);
-        
+        if (pelangganMakanList.Contains(newPelanggan))
+            pelangganMakanList.Remove(newPelanggan);
+
+        if (belumDapatMejaList.Contains(newPelanggan))
+            belumDapatMejaList.Remove(newPelanggan);
+    }
+
+    // dipanggil dari pelanggan
+    public void MasukAntrian(Pelanggan newPelanggan)
+    {
+        if (!pelangganMengantriList.Contains(newPelanggan))
+            pelangganMengantriList.Add(newPelanggan);
+
         pelangganMengantri();
     }
 
     // dipanggil dari pelanggan
-    public void MasukMejaMakan(Pelanggan newPelanggan)
+    public void MasukMejaMakan(Pelanggan newPelanggan, int _indexMakanan)
     {
-                
+        // Cek stok makanan dengan makanan pelanggan
+        if (!dapurManager.DiPesan(_indexMakanan))
+        {
+            return;
+        }
 
+        // Masuk Meja Makan setelah makanan siap
         if (mejaManager.MejaPenuh())
         {
-            Debug.Log("meja Penuh");
+            //Debug.Log("meja Penuh");
             // masukkan ke antrian duduk
             if (!belumDapatMejaList.Contains(newPelanggan))
                 belumDapatMejaList.Add(newPelanggan);
@@ -167,7 +191,7 @@ public class GameManager : MonoBehaviour
     {
         if (mejaManager.MejaPenuh())
         {
-            Debug.Log("meja masih penuh");
+            //Debug.Log("meja masih penuh");
             return;
         }
 
@@ -201,7 +225,8 @@ public class GameManager : MonoBehaviour
         {
             Pelanggan newPelanggan = pelangganMakanList[i];
 
-            if (newPelanggan.MyState == statePelanggan.makan)
+            if (newPelanggan.MyState == statePelanggan.makan ||
+                newPelanggan.MyState == statePelanggan.bayar)
                 continue;
 
             mejaManager.MasukMeja(newPelanggan);
@@ -216,7 +241,7 @@ public class GameManager : MonoBehaviour
 
             if (antrianList.Count < pelangganMengantriList.Count)
             {
-                Debug.Log("antrian penuh");
+                //Debug.Log("antrian penuh");
                 continue;
             }
 
