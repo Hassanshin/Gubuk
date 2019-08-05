@@ -81,6 +81,7 @@ public class GameManager : MonoBehaviour
 
     IEnumerator randomPelangganMasuk()
     {
+        yield return new WaitForSeconds(1f);
         while (!isPaused)
         {
             spawnPelanggan();
