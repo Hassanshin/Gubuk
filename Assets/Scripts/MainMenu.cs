@@ -109,9 +109,6 @@ public class MainMenu : MonoBehaviour
         {
             savedLevelStar[i] = loadedData.j_savedLevelStar[i];
         }
-
-        
-
     }
 
     private void LoadLevelStatsJson()
