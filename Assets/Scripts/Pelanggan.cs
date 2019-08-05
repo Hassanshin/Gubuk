@@ -13,13 +13,18 @@ public class Pelanggan : MonoBehaviour
                          PESAN_TAG = "pesan",
                          ANTRIDUDUK_TAG = "antriDuduk";
 
-    [SerializeField]
     private bool isSpawned;
-
-    [SerializeField]
     private int makananIndex;
+    private int memberiTip = 2;
 
-    [SerializeField]
+    public int MemberiTip
+    {
+        get
+        {
+            return memberiTip;
+        }
+    }
+
     private statePelanggan myState;
     public statePelanggan MyState
     {
@@ -73,7 +78,10 @@ public class Pelanggan : MonoBehaviour
 
     private void moodUpdate(bool _state)
     {
-        
+        //Debug.Log(isSpawned + ":" + gameObject.name);
+        if (!isSpawned)
+            return;
+
         if (_state)
         {
             if(mood != null)
@@ -94,10 +102,16 @@ public class Pelanggan : MonoBehaviour
 
     private IEnumerator moodEnum()
     {
+        changeText("puas");
+
+        yield return new WaitForSeconds(1f);
+
+        memberiTip = 1;
         changeText("biasa");
 
         yield return new WaitForSeconds(5f);
 
+        memberiTip = 0;
         changeText("marah");
 
         yield return new WaitForSeconds(3f);
@@ -169,6 +183,7 @@ public class Pelanggan : MonoBehaviour
     {
         changeText("");
 
+        memberiTip = 2;
         moodUpdate(false);
         myState = statePelanggan.jalan;
         dudukDi = null;
@@ -195,7 +210,7 @@ public class Pelanggan : MonoBehaviour
         else if (tujuan.tag == PESAN_TAG)
         {
             // state berubah jika sudah sampai di titik. void berhenti();
-            moodUpdate(true);
+            
         }
         else
         {
@@ -217,6 +232,7 @@ public class Pelanggan : MonoBehaviour
         else if (tujuan.tag == PESAN_TAG)
         {
             myState = statePelanggan.pesan;
+            moodUpdate(true);
         }
         else if (tujuan.tag == MEJA_TAG)
         {

@@ -23,7 +23,22 @@ public class GameManager : MonoBehaviour
 
     bool isPaused = false;
 
+    private float money;
+    public float Money
+    {
+        get
+        {
+            return money;
+        }
+
+        set
+        {
+            money = value;
+        }
+    }
+
     int counter;
+    private Coroutine pelangganMasukCor;
 
     private void Awake()
     {
@@ -45,7 +60,7 @@ public class GameManager : MonoBehaviour
         }
 
         // Mulai Random Pelanggan
-        StartCoroutine(randomPelangganMasuk());
+        pelangganMasukCor = StartCoroutine(randomPelangganMasuk());
     }
 
     private void Update()
@@ -53,8 +68,8 @@ public class GameManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             isPaused = !isPaused;
-            StopCoroutine(randomPelangganMasuk());
-            StartCoroutine(randomPelangganMasuk());
+            StopCorPelanggan();
+            pelangganMasukCor = StartCoroutine(randomPelangganMasuk());
         }
 
         // Debug
@@ -66,8 +81,6 @@ public class GameManager : MonoBehaviour
 
     IEnumerator randomPelangganMasuk()
     {
-        yield return new WaitForSeconds(2f);
-
         while (!isPaused)
         {
             spawnPelanggan();
@@ -75,6 +88,12 @@ public class GameManager : MonoBehaviour
             float _random = Random.Range(2, 6);
             yield return new WaitForSeconds(_random);
         }
+    }
+
+    // dipanggil dari WinLose
+    public void StopCorPelanggan()
+    {
+        StopCoroutine(pelangganMasukCor);
     }
 
     private void spawnPelanggan()
@@ -217,6 +236,10 @@ public class GameManager : MonoBehaviour
         deSpawnAddToPool(newPelanggan.transform);
         mejaPelanggan.KeluarDariMeja();
         mejaManager.mejaAvailable.Add(mejaPelanggan);
+
+        // menambah uang
+        money += 3 + newPelanggan.MemberiTip;
+        GetComponent<WinLose>().UpdateUI();
     }
 
     private void pelangganMakan()
