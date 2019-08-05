@@ -6,9 +6,15 @@ using Random = UnityEngine.Random;
 
 public class GameManager : MonoBehaviour
 {
+    private MainMenu mainMenu;
     public static GameManager _instance;
     private MejaManager mejaManager;
     private DapurManager dapurManager;
+
+    [Header("Level Stats")]
+    private int selectedLevel = 9;
+    private float[] spawnRandomDelay = new float[2];
+    private int[] starRequirement = new int[3];
 
     [Header("Komponen Transform")]
     public Transform antrianParent;
@@ -42,9 +48,28 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
+        loadLevelStats();
+        
         _instance = this;
         mejaManager = GetComponent<MejaManager>();
         dapurManager = GetComponent<DapurManager>();
+    }
+
+    private void loadLevelStats()
+    {
+        mainMenu = MainMenu._instance;
+        selectedLevel = mainMenu.selectedLevel;
+
+        for (int i = 0; i < starRequirement.Length; i++)
+        {
+            starRequirement[i] = mainMenu.starRequirement[selectedLevel, i];
+            GetComponent<WinLose>().starReq[i] = starRequirement[i];
+        }
+        
+        spawnRandomDelay[0] = mainMenu.spawnRandomDelay[selectedLevel, 0];
+        spawnRandomDelay[1] = mainMenu.spawnRandomDelay[selectedLevel, 1];
+
+        
     }
 
     private void Start()
@@ -86,7 +111,7 @@ public class GameManager : MonoBehaviour
         {
             spawnPelanggan();
 
-            float _random = Random.Range(2, 6);
+            float _random = Random.Range(spawnRandomDelay[0], spawnRandomDelay[1]);
             yield return new WaitForSeconds(_random);
         }
     }

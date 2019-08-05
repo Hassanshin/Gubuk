@@ -1,0 +1,10 @@
+{
+	"j_levelReq0": [20, 40, 60],
+	"j_levelReq1": [30, 50, 70],
+	"j_levelReq2": [50, 70, 90],
+	
+	"j_spawnDelay0": [3, 6],
+	"j_spawnDelay1": [2, 5],
+	"j_spawnDelay2": [1, 3]
+
+}

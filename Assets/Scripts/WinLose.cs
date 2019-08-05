@@ -8,7 +8,7 @@ public class WinLose : MonoBehaviour
 {
 
     private float stageTimer = 60f;
-    private int[] starReq = new int[3] { 45, 65, 80 };
+    public int[] starReq = new int[3] { 1, 1, 1 };
 
     private Coroutine timer;
     float money;
@@ -42,6 +42,11 @@ public class WinLose : MonoBehaviour
         v_MoneyInGame.text = money + "";
     }
 
+    public void BtnBackToMainMenu()
+    {
+        UnityEngine.SceneManagement.SceneManager.LoadScene(0);
+    }
+
     IEnumerator timerNum()
     {
         float _value = stageTimer;
@@ -67,7 +72,11 @@ public class WinLose : MonoBehaviour
 
         v_WinLoseBanner.transform.parent.gameObject.SetActive(true);
 
-        if (star() >= 1)
+        int starThisMatch = star();
+
+        MainMenu._instance.WriteLevelStarJson(starThisMatch);
+
+        if (starThisMatch >= 1)
         {
             v_WinLoseBanner.text = "Menang";
 
@@ -78,7 +87,7 @@ public class WinLose : MonoBehaviour
             v_WinLoseBanner.text = "Kalah";
         }
 
-        for (int i = 0; i < star(); i++)
+        for (int i = 0; i < starThisMatch; i++)
         {
             v_Star[i].gameObject.SetActive(true);
         }
