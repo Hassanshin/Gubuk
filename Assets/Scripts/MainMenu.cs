@@ -48,6 +48,12 @@ public class MainMenu : MonoBehaviour
 
     private void Start()
     {
+        if(!File.Exists(Application.persistentDataPath + "/Resources/saveFile.json"))
+            WriteLevelStarJson(0);
+
+        if (!File.Exists(Application.persistentDataPath + "/Resources/levelStats.json"))
+            WriteLevelStats();
+
         LoadPlayerSaveJson();
         LoadLevelStatsJson();
 
@@ -81,7 +87,10 @@ public class MainMenu : MonoBehaviour
     {
         public string j_name;
         public int[] j_savedLevelStar = new int[3];
+    }
 
+    public class LevelStats
+    {
         public int[] j_levelReq0 = new int[3];
         public int[] j_levelReq1 = new int[3];
         public int[] j_levelReq2 = new int[3];
@@ -93,7 +102,7 @@ public class MainMenu : MonoBehaviour
 
     private void LoadPlayerSaveJson()
     {
-        string _playerData = File.ReadAllText(Application.dataPath + "/Resources/saveFile.json");   // load file yang mana
+        string _playerData = File.ReadAllText(Application.persistentDataPath + "/Resources/saveFile.json");   // load file yang mana
 
         PlayerDataJson loadedData = new PlayerDataJson();                                           // new class 
 
@@ -113,11 +122,11 @@ public class MainMenu : MonoBehaviour
 
     private void LoadLevelStatsJson()
     {
-        string _playerData = File.ReadAllText(Application.dataPath + "/Resources/levelStats.json");   // load file yang mana
+        string _playerData = File.ReadAllText(Application.persistentDataPath + "/Resources/levelStats.json");   // load file yang mana
 
-        PlayerDataJson loadedData = new PlayerDataJson();                                           // new class 
+        LevelStats loadedData = new LevelStats();                                           // new class 
 
-        loadedData = JsonUtility.FromJson<PlayerDataJson>(_playerData);                             // ambil class dari json
+        loadedData = JsonUtility.FromJson<LevelStats>(_playerData);                             // ambil class dari json
 
         // ganti di unity
 
@@ -163,10 +172,27 @@ public class MainMenu : MonoBehaviour
         loadedData.j_savedLevelStar[selectedLevel] = _star;                                        // rubah datanya unity
         loadedData.j_name = "M. Fahmi Al Kushairi";
 
-        string name = JsonUtility.ToJson(loadedData);                                              // masukkan ke json datanya
+        string save = JsonUtility.ToJson(loadedData);                                              // masukkan ke json datanya
 
-        File.WriteAllText(Application.dataPath + "/Resources/saveFile.json", name);                // tulis file yang mana
+        File.WriteAllText(Application.persistentDataPath + "/Resources/saveFile.json", save);                // tulis file yang mana
 
+    }
+
+    private void WriteLevelStats()
+    {
+        LevelStats loadedData = new LevelStats();                                          // new class 
+
+        loadedData.j_levelReq0 = new int[3] { 20, 40, 60 };
+        loadedData.j_levelReq1 = new int[3] { 30, 50, 70 };
+        loadedData.j_levelReq2 = new int[3] { 50, 70, 90 };
+
+        loadedData.j_spawnDelay0 = new int[2] { 3, 6};
+        loadedData.j_spawnDelay1 = new int[2] { 2, 5};
+        loadedData.j_spawnDelay2 = new int[2] { 1, 3};
+
+        string save = JsonUtility.ToJson(loadedData);                                              // masukkan ke json datanya
+
+        File.WriteAllText(Application.persistentDataPath + "/Resources/levelStats.json", save);                // tulis file yang mana
     }
 
     #endregion
