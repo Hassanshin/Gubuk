@@ -14,16 +14,29 @@ public class MejaManager : MonoBehaviour
 
     private void Start()
     {
+
         foreach (Transform child in mejaParent.transform)
         {
-            mejaList.Add(child.GetComponent<Meja>());
+            if(child.gameObject.activeSelf)
+                mejaList.Add(child.GetComponent<Meja>());
 
         }
 
         mejaAvailable.AddRange(mejaList);
     }
 
-    //dipanggin dari GameManager
+    // dipanggin dari GameManager
+    public void MejaUpgrade(int _total)
+    {
+
+        for (int i = mejaParent.childCount - 1; i > mejaParent.childCount - _total; i--)
+        {
+            mejaParent.GetChild(i).gameObject.SetActive(false);
+        }
+        
+    }
+
+    // dipanggin dari GameManager
     public void MasukMeja(Pelanggan newPelanggan)
     {
         Meja _mejaIndex = randomMeja();

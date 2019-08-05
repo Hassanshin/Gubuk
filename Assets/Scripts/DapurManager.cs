@@ -7,13 +7,37 @@ public class DapurManager : MonoBehaviour
 {
     private int[] stockMakanan = new int[3];
 
-    [SerializeField]
-    private float[] durasiPembuatan = new float[3];
+    private float[] durasiPembuatan = new float[3] { 5, 5, 5 };
 
     [SerializeField]
     private Transform[] v_StockView;
 
     private bool[] isProducing = new bool[3];
+
+    // dipanggil dari GameManager
+    public void UpgradeDapur(int _level)
+    {
+        float a = 5;
+
+        switch (_level)
+        {
+            case 1:
+                a = 3.5f;
+                break;
+            case 2:
+                a = 2.5f;
+                break;
+            case 3:
+                a = 1f;
+                break;
+            default:
+                break;
+        }
+
+        Debug.Log(_level);
+
+        durasiPembuatan = new float[3] { a, a, a };
+    }
 
     // dipanggil dari GameManager, return true bila stok ada
     public bool DiPesan(int _index)

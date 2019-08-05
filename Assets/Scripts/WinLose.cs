@@ -36,6 +36,26 @@ public class WinLose : MonoBehaviour
     }
 
     // dipanggil dari game manager
+    public void UpgradeTime(int _level)
+    {
+        switch (_level)
+        {
+            case 1:
+                stageTimer += 3;
+                break;
+            case 2:
+                stageTimer += 6;
+                break;
+            case 3:
+                stageTimer += 10;
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    // dipanggil dari game manager
     public void UpdateUI()
     {
         money = GManager.Money;
@@ -74,7 +94,7 @@ public class WinLose : MonoBehaviour
 
         int starThisMatch = star();
 
-        MainMenu._instance.WriteLevelStarJson(starThisMatch);
+        MainMenu._instance.WritePlayerDataJson(starThisMatch);
 
         if (starThisMatch >= 1)
         {

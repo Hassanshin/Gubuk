@@ -10,6 +10,7 @@ public class GameManager : MonoBehaviour
     public static GameManager _instance;
     private MejaManager mejaManager;
     private DapurManager dapurManager;
+    private WinLose winLose;
 
     [Header("Level Stats")]
     private int selectedLevel = 9;
@@ -48,22 +49,53 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
-        loadLevelStats();
-        
         _instance = this;
         mejaManager = GetComponent<MejaManager>();
         dapurManager = GetComponent<DapurManager>();
+        winLose = GetComponent<WinLose>();
+
+        loadLevelStats();
+
+        ApplyUpgrades();
+
+    }
+
+    private void ApplyUpgrades()
+    {
+        switch (mainMenu.upgrades[0])
+        {
+            case 0:
+                mejaManager.MejaUpgrade(5);
+                break;
+            case 1:
+                mejaManager.MejaUpgrade(4);
+                break;
+            case 2:
+                mejaManager.MejaUpgrade(3);
+                break;
+            case 3:
+                mejaManager.MejaUpgrade(0);
+                break;
+            default:
+                break;
+        }
+
+        dapurManager.UpgradeDapur(mainMenu.upgrades[1]);
+
+        winLose.UpgradeTime(mainMenu.upgrades[2]);
     }
 
     private void loadLevelStats()
     {
         mainMenu = MainMenu._instance;
+        if (mainMenu == null)
+            return;
         selectedLevel = mainMenu.selectedLevel;
 
         for (int i = 0; i < starRequirement.Length; i++)
         {
             starRequirement[i] = mainMenu.starRequirement[selectedLevel, i];
-            GetComponent<WinLose>().starReq[i] = starRequirement[i];
+            winLose.starReq[i] = starRequirement[i];
         }
         
         spawnRandomDelay[0] = mainMenu.spawnRandomDelay[selectedLevel, 0];
@@ -265,7 +297,7 @@ public class GameManager : MonoBehaviour
 
         // menambah uang
         money += 3 + newPelanggan.MemberiTip;
-        GetComponent<WinLose>().UpdateUI();
+        winLose.UpdateUI();
     }
 
     private void pelangganMakan()
