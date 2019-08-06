@@ -65,6 +65,7 @@ public class WinLose : MonoBehaviour
     public void BtnBackToMainMenu()
     {
         UnityEngine.SceneManagement.SceneManager.LoadScene(0);
+        MainMenu._instance.bgmPlay(1);
     }
 
     IEnumerator timerNum()

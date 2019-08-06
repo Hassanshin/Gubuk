@@ -28,10 +28,15 @@ public class MainMenu : MonoBehaviour
     public int[,] starRequirement = new int[3, 3] { { 20, 40, 60 }, { 30, 50, 70 }, { 50, 70, 90 } };
     public float[,] spawnRandomDelay = new float[3, 2] { { 3, 6 }, { 2, 5 }, { 1, 3 } };
 
-
     public int Diamond = 10;
 
     public int selectedLevel;
+
+    [Header("BGM")]
+    [SerializeField]
+    private AudioSource bgmMainMenu;
+    [SerializeField]
+    private AudioSource bgmGame;
 
     #region Button 
 
@@ -49,6 +54,7 @@ public class MainMenu : MonoBehaviour
     public void BtnChangeScene(int _level)
     {
         SceneManager.LoadScene(1);
+        MainMenu._instance.bgmPlay(0);
 
         PlayerPrefs.SetInt("selectedLevel", _level);
         selectedLevel = _level;
@@ -101,19 +107,19 @@ public class MainMenu : MonoBehaviour
         
         if (_instance)
         {
-            
+            bgmMainMenu.Stop(); bgmGame.Stop();
         }
         else
         {
             _instance = this;
             DontDestroyOnLoad(gameObject);
+            bgmPlay(1);
         }
     }
 
     private void Start()
     {
         createFileIfNotExisted();
-        
 
         LoadPlayerSaveJson();
         LoadShopUpgrades();
@@ -123,6 +129,35 @@ public class MainMenu : MonoBehaviour
 
         updateStar();
         updateUpgradesUI();
+    }
+
+    public void bgmPlay(int _index)
+    {
+        Debug.Log("sound playing" + _index);
+
+        if (_instance)
+        {
+
+        }
+
+        switch (_index)
+        {
+            case 0:
+                bgmGame.Stop();
+
+                if(!bgmMainMenu.isPlaying)
+                    bgmMainMenu.Play();
+
+                break;
+            case 1:
+                bgmMainMenu.Stop();
+
+                if(!bgmGame.isPlaying)
+                    bgmGame.Play();
+
+                break;
+        }
+        
     }
 
     private void createFileIfNotExisted()
