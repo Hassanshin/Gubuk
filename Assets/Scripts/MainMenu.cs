@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine;
+using UnityEngine.Audio;
 using UnityEngine.SceneManagement;
 using System.IO;
 using System;
@@ -38,7 +39,20 @@ public class MainMenu : MonoBehaviour
     [SerializeField]
     private AudioSource bgmGame;
 
+    [SerializeField]
+    private AudioMixer mixer;
+
     #region Button 
+
+    public void BtnSliderSFX(float _value)
+    {
+        mixer.SetFloat("SFXVolume", _value);
+    }
+
+    public void BtnSliderBGM(float _value)
+    {
+        mixer.SetFloat("BGMVolume", _value);
+    }
 
     public void BtnQuit()
     {

@@ -1768,13 +1768,24 @@ MonoBehaviour:
   m_FillRect: {fileID: 1571444632}
   m_HandleRect: {fileID: 1752067118}
   m_Direction: 0
-  m_MinValue: 0
-  m_MaxValue: 1
+  m_MinValue: -40
+  m_MaxValue: 0
   m_WholeNumbers: 0
-  m_Value: 1
+  m_Value: 0
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 688302510}
+        m_MethodName: BtnSliderBGM
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.Slider+SliderEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!1 &567888615
@@ -2250,6 +2261,7 @@ MonoBehaviour:
   selectedLevel: 0
   bgmMainMenu: {fileID: 517783953}
   bgmGame: {fileID: 428081606}
+  mixer: {fileID: 24100000, guid: 0b7647af43a96ef4fa89b0b766c0a0b4, type: 2}
 --- !u!1 &754076847
 GameObject:
   m_ObjectHideFlags: 0
@@ -4948,13 +4960,24 @@ MonoBehaviour:
   m_FillRect: {fileID: 46749964}
   m_HandleRect: {fileID: 359560665}
   m_Direction: 0
-  m_MinValue: 0
-  m_MaxValue: 1
+  m_MinValue: -40
+  m_MaxValue: 0
   m_WholeNumbers: 0
-  m_Value: 1
+  m_Value: 0
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 688302510}
+        m_MethodName: BtnSliderSFX
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.Slider+SliderEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!1 &1786216658

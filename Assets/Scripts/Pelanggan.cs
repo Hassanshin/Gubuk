@@ -56,6 +56,11 @@ public class Pelanggan : MonoBehaviour
     private Coroutine mood = null;
     Coroutine hidePopupCor = null;
 
+    [Header("SFX")]
+   
+    public AudioSource s_pesan;
+    public AudioSource s_masuk;
+
     private void Awake()
     {
         _navAgent = GetComponent<NavMeshAgent>();
@@ -71,6 +76,7 @@ public class Pelanggan : MonoBehaviour
         
     }
 
+    // gunakan Spawned From Pool untuk mengganti void ini
     private void Start()
     {
         v_makananImage = canvas.transform.GetChild(1).GetChild(0).GetComponent<Image>();
@@ -92,6 +98,9 @@ public class Pelanggan : MonoBehaviour
         GManager.MasukAntrian(this);
         isSpawned = true;
         makananIndex = Random.Range(0, 3);
+
+        s_masuk.Play();
+        
     }
 
     private void Update()
@@ -211,7 +220,9 @@ public class Pelanggan : MonoBehaviour
     public void TappedByUser()
     {
         //Debug.Log(myState + "."+ gameObject.name);
-
+        
+            
+        
         switch (myState)
         {
             case statePelanggan.jalan:
@@ -238,8 +249,10 @@ public class Pelanggan : MonoBehaviour
                 if (dudukDi == null)
                     return;
 
-                GManager.SelesaiMakan(this, dudukDi);
+                
 
+                GManager.SelesaiMakan(this, dudukDi);
+                
                 // reset state kembali ke pool
                 resetState();
 
@@ -252,6 +265,7 @@ public class Pelanggan : MonoBehaviour
         }
     }
 
+    
     void resetState()
     {
         changeEmot("");
@@ -261,6 +275,7 @@ public class Pelanggan : MonoBehaviour
         myState = statePelanggan.jalan;
         dudukDi = null;
         isSpawned = false;
+        
     }
 
     // dilanggil dari GameManager, MejaManager

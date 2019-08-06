@@ -47,6 +47,8 @@ public class GameManager : MonoBehaviour
     int counter;
     private Coroutine pelangganMasukCor;
 
+    public AudioSource s_bayar;
+
     private void Awake()
     {
         _instance = this;
@@ -162,6 +164,12 @@ public class GameManager : MonoBehaviour
             return;
         }
 
+        if (pelangganMengantriList.Count >= antrianList.Count)
+        {
+            //Debug.Log("Antrian Penuh");
+            return;
+        }
+
         GameObject pelanggan = spawnFromPool(poolPelangganParent.transform.position, poolPelangganParent.transform.rotation);
 
         pelanggan.name = ("pelanggan " + counter);
@@ -237,6 +245,8 @@ public class GameManager : MonoBehaviour
             return;
         }
 
+        newPelanggan.s_pesan.Play();
+
         // Masuk Meja Makan setelah makanan siap
         if (mejaManager.MejaPenuh())
         {
@@ -296,6 +306,7 @@ public class GameManager : MonoBehaviour
         mejaManager.mejaAvailable.Add(mejaPelanggan);
 
         // menambah uang
+        s_bayar.Play();
         money += 3 + newPelanggan.MemberiTip;
         winLose.UpdateUI();
     }
