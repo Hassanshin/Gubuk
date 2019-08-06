@@ -15,6 +15,9 @@ public class WinLose : MonoBehaviour
 
     [Header("UI")]
     [SerializeField]
+    private Text v_LevelText;
+
+    [SerializeField]
     private Text v_WinLoseBanner;
 
     [SerializeField]
@@ -32,6 +35,9 @@ public class WinLose : MonoBehaviour
     {
         GManager = GetComponent<GameManager>();
         timer = StartCoroutine( timerNum() );
+
+        v_LevelText.text = "Level " + (MainMenu._instance.selectedLevel + 1) + "";
+
         UpdateUI();
     }
 
@@ -66,6 +72,7 @@ public class WinLose : MonoBehaviour
     {
         UnityEngine.SceneManagement.SceneManager.LoadScene(0);
         MainMenu._instance.bgmPlay(1);
+        MainMenu._instance.ResetMainMenu(true);
     }
 
     IEnumerator timerNum()

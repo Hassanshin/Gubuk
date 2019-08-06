@@ -42,6 +42,12 @@ public class MainMenu : MonoBehaviour
     [SerializeField]
     private AudioMixer mixer;
 
+    [SerializeField]
+    private GameObject[] activeGameobject;
+
+    [SerializeField]
+    private GameObject[] HideGameobject;
+
     #region Button 
 
     public void BtnSliderSFX(float _value)
@@ -68,10 +74,12 @@ public class MainMenu : MonoBehaviour
     public void BtnChangeScene(int _level)
     {
         SceneManager.LoadScene(1);
-        MainMenu._instance.bgmPlay(0);
+        bgmPlay(0);
 
         PlayerPrefs.SetInt("selectedLevel", _level);
         selectedLevel = _level;
+
+        ResetMainMenu(false);
     }
 
     public void BtnResetUpgrades()
@@ -80,6 +88,7 @@ public class MainMenu : MonoBehaviour
         for (int i = 0; i < 3; i++)
         {
             WriteShopUpgrades(i, 0);
+            
             upgrades[i] = 0;
         }
 
@@ -107,11 +116,12 @@ public class MainMenu : MonoBehaviour
         value++;
 
         WriteShopUpgrades(_upgradeIndex, value);
+        
         Diamond -= 2;
 
         v_diamond.text = Diamond + "";
 
-        updateUpgradesUI();
+       updateUpgradesUI();
     }
 
     #endregion
@@ -122,6 +132,7 @@ public class MainMenu : MonoBehaviour
         if (_instance)
         {
             bgmMainMenu.Stop(); bgmGame.Stop();
+            Destroy(gameObject);
         }
         else
         {
@@ -140,6 +151,25 @@ public class MainMenu : MonoBehaviour
         LoadLevelStatsJson();
 
         v_diamond.text = Diamond + "";
+
+        updateStar();
+        updateUpgradesUI();
+    }
+
+    public void ResetMainMenu(bool _stat)
+    {
+        for (int i = 0; i < activeGameobject.Length; i++)
+        {
+            activeGameobject[i].SetActive(_stat);
+        }
+
+        for (int i = 0; i < HideGameobject.Length; i++)
+        {
+            HideGameobject[i].SetActive(!_stat);
+        }
+
+        LoadPlayerSaveJson();
+        LoadShopUpgrades();
 
         updateStar();
         updateUpgradesUI();
@@ -349,14 +379,29 @@ public class MainMenu : MonoBehaviour
     {
         PlayerData loadedData = new PlayerData();                                          // new class 
 
-        loadedData.j_savedLevelStar[selectedLevel] = _star;                                        // rubah datanya unity
+        for (int i = 0; i < 3; i++)
+        {
+            loadedData.j_savedLevelStar[i] = savedLevelStar[i];
+
+            Debug.Log(savedLevelStar[i] + "    savedLevel");
+        }
+                                                                                                // rubah datanya unity
+        //if(loadedData.j_savedLevelStar[selectedLevel] > savedLevelStar[selectedLevel])
+            loadedData.j_savedLevelStar[selectedLevel] = _star;                                        
+
         loadedData.j_name = "M. Fahmi Al Kushairi";
         
         string save = JsonUtility.ToJson(loadedData);                                              // masukkan ke json datanya
 
         File.WriteAllText(Application.persistentDataPath + "/saveFile.json", save);                // tulis file yang mana
 
-        Debug.Log(_star + " on  " + selectedLevel);
+        Debug.Log(_star + " onLevel  " + selectedLevel);
+
+        for (int i = 0; i < 3; i++)
+        {
+            Debug.Log(loadedData.j_savedLevelStar[i] + "    Loadedsaved");
+        }
+        
     }
 
     private void WriteShopUpgrades(int _upgradeIndex, int _value)

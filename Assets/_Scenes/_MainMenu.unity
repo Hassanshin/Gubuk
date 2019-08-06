@@ -2262,6 +2262,10 @@ MonoBehaviour:
   bgmMainMenu: {fileID: 517783953}
   bgmGame: {fileID: 428081606}
   mixer: {fileID: 24100000, guid: 0b7647af43a96ef4fa89b0b766c0a0b4, type: 2}
+  activeGameobject:
+  - {fileID: 1609630389}
+  HideGameobject:
+  - {fileID: 1388611583}
 --- !u!1 &754076847
 GameObject:
   m_ObjectHideFlags: 0

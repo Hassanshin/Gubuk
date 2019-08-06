@@ -362,10 +362,10 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 1
   m_Enabled: 1
-  m_Radius: 0.35
-  m_Height: 1
+  m_Radius: 0.56
+  m_Height: 2.5
   m_Direction: 1
-  m_Center: {x: 0, y: 0.5, z: 0}
+  m_Center: {x: 0, y: 0.86, z: 0}
 --- !u!95 &247499116926972611
 Animator:
   serializedVersion: 3
@@ -408,7 +408,6 @@ MonoBehaviour:
   - {fileID: 21300008, guid: 57d5e9f54163fec4e93079630086a6c4, type: 3}
   - {fileID: 21300010, guid: 57d5e9f54163fec4e93079630086a6c4, type: 3}
   - {fileID: 21300012, guid: 57d5e9f54163fec4e93079630086a6c4, type: 3}
-  s_bayar: {fileID: 1972997399645103801}
   s_pesan: {fileID: 4694477743883240127}
   s_masuk: {fileID: 599687268028548238}
 --- !u!1 &5671299740482906778
