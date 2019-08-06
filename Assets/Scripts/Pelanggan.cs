@@ -37,6 +37,7 @@ public class Pelanggan : MonoBehaviour
     Transform tujuan;
     private float jarak;
     private NavMeshAgent _navAgent;
+    private Animator _anim;
     private Meja dudukDi;
 
     GameManager GManager;
@@ -49,6 +50,7 @@ public class Pelanggan : MonoBehaviour
     private void Awake()
     {
         _navAgent = GetComponent<NavMeshAgent>();
+        _anim = GetComponent<Animator>();
         GManager = GameManager._instance;
 
         cam = Camera.main;
@@ -127,11 +129,18 @@ public class Pelanggan : MonoBehaviour
 
         myState = statePelanggan.bayar;
         changeText("bayar");
+
+        _anim.SetBool("isEating", false);
     }
 
     void changeText(string _text)
     {
         canvas.transform.GetChild(1).GetComponent<Text>().text = _text ;
+    }
+
+    void showPopup()
+    {
+
     }
 
     // dilanggil dari DragHandler, setelah disentuh
@@ -193,7 +202,7 @@ public class Pelanggan : MonoBehaviour
     // dilanggil dari GameManager, MejaManager
     public void Berjalan(Transform _pos)
     {
-
+        _anim.SetBool("isWalking", true);
         tujuan = _pos;
         _navAgent.isStopped = false;
 
@@ -224,6 +233,8 @@ public class Pelanggan : MonoBehaviour
     {
         transform.rotation = tujuan.rotation;
 
+        _anim.SetBool("isWalking", false);
+
         if (tujuan.tag == ANTRIPESAN_TAG)
         {
             myState = statePelanggan.antriPesan;
@@ -238,6 +249,8 @@ public class Pelanggan : MonoBehaviour
         {
             dudukDi = tujuan.GetComponent<Meja>();
             StartCoroutine( makanEnum() );
+
+            _anim.SetBool("isEating", true);
         }
 
         _navAgent.isStopped = true;
