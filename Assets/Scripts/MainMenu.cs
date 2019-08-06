@@ -54,11 +54,21 @@ public class MainMenu : MonoBehaviour
         selectedLevel = _level;
     }
 
+    public void BtnResetUpgrades()
+    {
+       
+        for (int i = 0; i < 3; i++)
+        {
+            WriteShopUpgrades(i, 0);
+            upgrades[i] = 0;
+        }
 
+        updateUpgradesUI();
+    }
 
     public void BtnUpgradeToko(int _upgradeIndex)
     {
-        if(Diamond <= 0)
+        if(Diamond <= 1)
         {
             Debug.Log("Diamond kurang");
 
@@ -77,7 +87,7 @@ public class MainMenu : MonoBehaviour
         value++;
 
         WriteShopUpgrades(_upgradeIndex, value);
-        Diamond--;
+        Diamond -= 2;
 
         v_diamond.text = Diamond + "";
 
@@ -102,14 +112,8 @@ public class MainMenu : MonoBehaviour
 
     private void Start()
     {
-        if(!File.Exists(Application.persistentDataPath + "/Resources/saveFile.json"))
-            WritePlayerDataJson(0);
-
-        if (!File.Exists(Application.persistentDataPath + "/Resources/levelStats.json"))
-            WriteLevelStats();
-
-        if (!File.Exists(Application.persistentDataPath + "/Resources/upgradesFile.json"))
-            WriteShopUpgrades(0,0);
+        createFileIfNotExisted();
+        
 
         LoadPlayerSaveJson();
         LoadShopUpgrades();
@@ -121,9 +125,28 @@ public class MainMenu : MonoBehaviour
         updateUpgradesUI();
     }
 
+    private void createFileIfNotExisted()
+    {
+        if (!File.Exists(Application.persistentDataPath + "/saveFile.json"))
+            WritePlayerDataJson(0);
+
+        if (!File.Exists(Application.persistentDataPath + "/levelStats.json"))
+            WriteLevelStats();
+
+        if (!File.Exists(Application.persistentDataPath + "/upgradesFile.json"))
+            WriteShopUpgrades(0, 0);
+
+        
+    }
+
     private void updateUpgradesUI()
     {
         LoadShopUpgrades();
+
+        for (int i = 0; i < v_Upgrades.Length; i++)
+        {
+            v_Upgrades[i].gameObject.SetActive(false);
+        }
 
         for (int i = 0; i < upgrades[0]; i++)
         {
@@ -192,7 +215,7 @@ public class MainMenu : MonoBehaviour
 
     private void LoadPlayerSaveJson()
     {
-        string _playerData = File.ReadAllText(Application.persistentDataPath + "/Resources/saveFile.json");   // load file yang mana
+        string _playerData = File.ReadAllText(Application.persistentDataPath + "/saveFile.json");   // load file yang mana
 
         PlayerData loadedData = new PlayerData();                                           // new class 
 
@@ -214,7 +237,7 @@ public class MainMenu : MonoBehaviour
 
     private void LoadShopUpgrades()
     {
-        string _playerData = File.ReadAllText(Application.persistentDataPath + "/Resources/upgradesFile.json");   // load file yang mana
+        string _playerData = File.ReadAllText(Application.persistentDataPath + "/upgradesFile.json");   // load file yang mana
 
         ShopUpgrades loadedData = new ShopUpgrades();                                           // new class 
 
@@ -230,7 +253,7 @@ public class MainMenu : MonoBehaviour
 
     private void LoadLevelStatsJson()
     {
-        string _playerData = File.ReadAllText(Application.persistentDataPath + "/Resources/levelStats.json");   // load file yang mana
+        string _playerData = File.ReadAllText(Application.persistentDataPath + " /levelStats.json");   // load file yang mana
 
         LevelStats loadedData = new LevelStats();                                           // new class 
 
@@ -282,8 +305,9 @@ public class MainMenu : MonoBehaviour
         
         string save = JsonUtility.ToJson(loadedData);                                              // masukkan ke json datanya
 
-        File.WriteAllText(Application.persistentDataPath + "/Resources/saveFile.json", save);                // tulis file yang mana
+        File.WriteAllText(Application.persistentDataPath + "/saveFile.json", save);                // tulis file yang mana
 
+        Debug.Log(_star + " on  " + selectedLevel);
     }
 
     private void WriteShopUpgrades(int _upgradeIndex, int _value)
@@ -300,7 +324,7 @@ public class MainMenu : MonoBehaviour
         
         string save = JsonUtility.ToJson(loadedData);                                              // masukkan ke json datanya
 
-        File.WriteAllText(Application.persistentDataPath + "/Resources/upgradesFile.json", save);                // tulis file yang mana
+        File.WriteAllText(Application.persistentDataPath + "/upgradesFile.json", save);                // tulis file yang mana
 
         Debug.Log(loadedData.j_upgrades[_upgradeIndex]);
 
@@ -320,7 +344,7 @@ public class MainMenu : MonoBehaviour
 
         string save = JsonUtility.ToJson(loadedData);                                              // masukkan ke json datanya
 
-        File.WriteAllText(Application.persistentDataPath + "/Resources/levelStats.json", save);                // tulis file yang mana
+        File.WriteAllText(Application.persistentDataPath + " /levelStats.json", save);                // tulis file yang mana
     }
 
     #endregion

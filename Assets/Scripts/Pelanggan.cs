@@ -40,12 +40,21 @@ public class Pelanggan : MonoBehaviour
     private Animator _anim;
     private Meja dudukDi;
 
-    GameManager GManager;
     [SerializeField]
     private Canvas canvas;
-    private Camera cam;
 
+    [SerializeField]
+    private Sprite[] v_makanan;
+    private Image v_makananImage;
+    
+    [SerializeField]
+    private Sprite[] v_emot;
+    private Image v_emotImage;
+
+    GameManager GManager;
+    private Camera cam;
     private Coroutine mood = null;
+    Coroutine hidePopupCor = null;
 
     private void Awake()
     {
@@ -57,7 +66,19 @@ public class Pelanggan : MonoBehaviour
         canvas.worldCamera = cam;
         canvas.transform.localScale = new Vector3(-1, 1, 1);
 
-        changeText("");
+        
+
+        
+    }
+
+    private void Start()
+    {
+        v_makananImage = canvas.transform.GetChild(1).GetChild(0).GetComponent<Image>();
+        v_emotImage = canvas.transform.GetChild(2).GetChild(0).GetComponent<Image>();
+
+        changeEmot("");
+
+        hideFoodPopup();
     }
 
     private void LateUpdate()
@@ -94,7 +115,7 @@ public class Pelanggan : MonoBehaviour
         }
         else
         {
-            changeText("");
+            changeEmot("");
 
             if (mood != null)
                 StopCoroutine(mood);
@@ -104,17 +125,17 @@ public class Pelanggan : MonoBehaviour
 
     private IEnumerator moodEnum()
     {
-        changeText("puas");
+        changeEmot("puas");
 
         yield return new WaitForSeconds(1f);
 
         memberiTip = 1;
-        changeText("biasa");
+        changeEmot("biasa");
 
         yield return new WaitForSeconds(5f);
 
         memberiTip = 0;
-        changeText("marah");
+        changeEmot("marah");
 
         yield return new WaitForSeconds(3f);
 
@@ -128,20 +149,63 @@ public class Pelanggan : MonoBehaviour
         yield return new WaitForSeconds(7f);
 
         myState = statePelanggan.bayar;
-        changeText("bayar");
+        changeEmot("bayar");
 
         _anim.SetBool("isEating", false);
     }
 
-    void changeText(string _text)
+    void changeEmot(string _text)
     {
-        canvas.transform.GetChild(1).GetComponent<Text>().text = _text ;
+        canvas.transform.GetChild(0).GetComponent<Text>().text = _text ;
+
+        if(hidePopupCor != null)
+            StopCoroutine(hidePopupCor);
+
+        v_emotImage.transform.parent.gameObject.SetActive(true);
+
+        switch (_text)
+        {
+            case "biasa":
+                v_emotImage.sprite = v_emot[0];
+                break;
+            case "puas":
+                v_emotImage.sprite = v_emot[1];
+                break;
+            case "marah":
+                v_emotImage.sprite = v_emot[2];
+                break;
+            default:
+                v_emotImage.transform.parent.gameObject.SetActive(false);
+                break;
+        }
+
+        if(v_emotImage.transform.parent.gameObject.activeSelf)
+            hidePopupCor = StartCoroutine(hideEmotPopup());
     }
 
-    void showPopup()
+    IEnumerator hideEmotPopup()
     {
+        yield return new WaitForSeconds(3f);
+
+        v_emotImage.transform.parent.gameObject.SetActive(false);
+    }
+
+    void showFoodPopup()
+    {
+        v_makananImage.sprite = v_makanan[makananIndex];
+        v_makananImage.transform.parent.gameObject.SetActive(true);
+        
+    }
+
+    void hideFoodPopup()
+    {
+        if (!v_makananImage.transform.parent.gameObject.activeSelf)
+            return;
+
+        v_makananImage.transform.parent.gameObject.SetActive(!true);
 
     }
+
 
     // dilanggil dari DragHandler, setelah disentuh
     public void TappedByUser()
@@ -190,7 +254,7 @@ public class Pelanggan : MonoBehaviour
 
     void resetState()
     {
-        changeText("");
+        changeEmot("");
 
         memberiTip = 2;
         moodUpdate(false);
@@ -210,11 +274,15 @@ public class Pelanggan : MonoBehaviour
         {
             myState = statePelanggan.makan;
             moodUpdate(false);
+
+            hideFoodPopup();
         }
         else if (tujuan.tag == ANTRIDUDUK_TAG)
         {
             myState = statePelanggan.antriDuduk;
             moodUpdate(true);
+
+            hideFoodPopup();
         }
         else if (tujuan.tag == PESAN_TAG)
         {
@@ -244,6 +312,8 @@ public class Pelanggan : MonoBehaviour
         {
             myState = statePelanggan.pesan;
             moodUpdate(true);
+
+            showFoodPopup();
         }
         else if (tujuan.tag == MEJA_TAG)
         {

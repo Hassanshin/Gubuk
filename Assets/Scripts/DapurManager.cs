@@ -14,6 +14,8 @@ public class DapurManager : MonoBehaviour
 
     private bool[] isProducing = new bool[3];
 
+    private Animation[] _anim = new Animation[3];
+
     // dipanggil dari GameManager
     public void UpgradeDapur(int _level)
     {
@@ -34,17 +36,16 @@ public class DapurManager : MonoBehaviour
                 break;
         }
 
-        Debug.Log(_level);
-
         durasiPembuatan = new float[3] { a, a, a };
     }
 
     // dipanggil dari GameManager, return true bila stok ada
     public bool DiPesan(int _index)
     {
-        if(stockMakanan[_index] <= 0)
+        if (stockMakanan[_index] <= 0)
         {
-            Debug.Log("Stock makanan " + _index + " habis");
+            //Debug.Log("Stock makanan " + _index + " habis");
+            _anim[_index].Play();
             return false;
         }
 
@@ -64,7 +65,7 @@ public class DapurManager : MonoBehaviour
         }
         else
         {
-            Debug.Log("sedang memproduksi");
+            //Debug.Log("sedang memproduksi");
         }
         
     }
@@ -92,6 +93,10 @@ public class DapurManager : MonoBehaviour
 
     private void Start()
     {
+        for (int i = 0; i < v_StockView.Length; i++)
+        {
+            _anim[i] = v_StockView[i].GetComponent<Animation>();
+        }
         updateUI();
     }
 
